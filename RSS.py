@@ -92,7 +92,7 @@ class RSSDelegate(object):
         self.feed = feed
 
     def tableview_did_select(self, tableview, section, row):
-        entry = self.feed['entries'][row]
+        entry = self.dates[self.date_indices[section]][row]
         webview = ui.WebView()
         webview.name = entry['title']
         webview.load_url(entry['link'])
@@ -127,7 +127,6 @@ class RSSDataSource(object):
     def tableview_cell_for_row(self, tableview, section, row):
         cell = ui.TableViewCell()
         cell.text_label.text = self.dates[self.date_indices[section]][row]['title']
-        # cell.detail_text_label.text = feed['entries'][row]['link']
         return cell
 
     def tableview_title_for_header(self, tableview, section):
