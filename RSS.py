@@ -10,7 +10,7 @@ from dateutil.parser import parse as parse_date
 
 conn = sqlite3.connect('feeds.db')
 cursor = conn.execute('pragma user_version')
-version = cursor.fetchone()
+version = cursor.fetchone()[0]
 if version == 0:
     conn.execute('BEGIN TRANSACTION')
     conn.execute('PRAGMA USER_VERSION=1')
