@@ -31,12 +31,14 @@ class FeedListController(object):
     def tableview_did_select(self, tableview, section, row): 
         console.show_activity()
         feed = feedparser.parse(self.feeds[row]['url'])
+        
+        rss_controller = RSSController(feed)
 
         tv = ui.TableView()
         tv.name = self.feeds[row]['title']
         tv.allows_multiple_selection_during_editing = True
-        tv.data_source = RSSDataSource(feed)
-        tv.delegate = RSSDelegate(feed)
+        tv.data_source = rss_controller
+        tv.delegate = rss_controller
 
         table_view.navigation_view.push_view(tv)
         console.hide_activity()
@@ -87,9 +89,24 @@ def add_feed(sender):
     navigation_view.remove_subview(indicator)
 
 
-class RSSDelegate(object):
+class RSSController(object):
     def __init__(self, feed):
+        index = 0
         self.feed = feed
+        self.dates = {}
+        self.date_indices = []
+
+        if feed is None:
+            return
+
+        for entry in self.feed['entries']:
+            dt = parse_date(entry['published'])
+            if dt.date() in self.dates:
+                self.dates[dt.date()].append(entry)
+            else:
+                self.dates[dt.date()] = [entry]
+                self.date_indices.append(dt.date())
+                index += 1
 
     def tableview_did_select(self, tableview, section, row):
         entry = self.dates[self.date_indices[section]][row]
@@ -98,25 +115,6 @@ class RSSDelegate(object):
         webview.load_url(entry['link'])
 
         tableview.navigation_view.push_view(webview)
-
-
-class RSSDataSource(object):
-    def __init__(self, feed):
-        index = 0
-        self.dates = {}
-        self.date_indices = []
-
-        if feed is None:
-            return
-
-        for entry in feed['entries']:
-            dt = parse_date(entry['published'])
-            if dt.date() in self.dates:
-                self.dates[dt.date()].append(entry)
-            else:
-                self.dates[dt.date()] = [entry]
-                self.date_indices.append(dt.date())
-                index += 1
 
     def tableview_number_of_sections(self, tableview):
         return len(self.dates)
