@@ -1,7 +1,7 @@
 PythonistaRSSReader
 ===================
 
-A super simple RSS reader for use with Pythonista on iOS. To use it, just copy and paste the script in RSS.py to Pythonista and tap the "run" botton in the top right. The script will save your feeds across runs in a SQLite database.
+A super simple RSS reader for use with Pythonista on iOS. To use it, just copy and paste the script in RSS.py to Pythonista and tap the "run" botton in the top right.
 
 Screenshots
 -----------
